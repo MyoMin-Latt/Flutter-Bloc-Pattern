@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:counter_cubit/cubit/counter_cubit.dart';
+import 'package:counter_cubit/cubit/network_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,8 +22,11 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CounterCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => CounterCubit(),),
+        BlocProvider(create: (context) => NetworkCubit(),),
+      ],
       child: MaterialApp(
         home: Scaffold(
           appBar: AppBar(
@@ -34,7 +38,7 @@ class Home extends StatelessWidget {
                 children: [
                   Center(
                       child: Text(
-                    'The value is $state',
+                    'The value is //',
                     style: TextStyle(fontSize: 20),
                   )),
                   SizedBox(
@@ -59,6 +63,33 @@ class Home extends StatelessWidget {
                           icon: Icon(Icons.remove),
                           label: Text('Minus')),
                     ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(onPressed: () {
+                        BlocProvider.of<NetworkCubit>(context).loading();
+                      }, child: Text("Loading")),
+                      ElevatedButton(onPressed: () {
+                        BlocProvider.of<NetworkCubit>(context).success();
+                      }, child: Text("Success")),
+                      ElevatedButton(onPressed: () {
+                        BlocProvider.of<NetworkCubit>(context).failure();
+                      }, child: Text("Failure")),
+                    ],
+                  ),
+                  BlocBuilder<NetworkCubit, NetworkState>(
+                    builder: (context, state){
+                      if(state is NetworkSuccess){
+                        return Text(state.data);
+                      }
+                      else if(state is NetworkFailure){
+                        return Text(state.error);
+                      }
+                      else{
+                        return Center(child: CircularProgressIndicator(),);
+                      }
+                    }
                   )
                 ],
               );
