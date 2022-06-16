@@ -1,3 +1,7 @@
+// Multi BlocProvider
+// BlocBuilder<CounterCubit, int>(builder: ) => to get Data
+// BlocProvider.of<CounterCubit>(context).increment(); => to call function
+
 import 'dart:developer';
 
 import 'package:counter_cubit/cubit/counter_cubit.dart';
@@ -22,7 +26,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiBlocProvider( 
       providers: [
         BlocProvider(create: (context) => CounterCubit(),),
         BlocProvider(create: (context) => NetworkCubit(),),
@@ -38,7 +42,7 @@ class Home extends StatelessWidget {
                 children: [
                   Center(
                       child: Text(
-                    'The value is //',
+                    'The value is $state',
                     style: TextStyle(fontSize: 20),
                   )),
                   SizedBox(
